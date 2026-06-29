@@ -93,23 +93,6 @@ function App() {
     setStorage(nextState)
   }
 
-  const resetProgress = () => {
-    localStorage.removeItem(STORAGE_KEY)
-    setStorage({ leaderboard: [], usedEmails: {} })
-    setLockedEntry(null)
-    setEmailError('')
-    setEmail('')
-    setLoggedInEmail('')
-    setQuizReady(false)
-    setCurrentIndex(0)
-    setSelected('')
-    setSubmitted(false)
-    setLastCorrect(false)
-    setScore(0)
-    setCompleted(false)
-    setTimeLeft(TIMER_SECONDS)
-  }
-
   const handleAdvance = (isCorrect) => {
     const nextScore = score + (isCorrect ? 1 : 0)
     const nextIndex = currentIndex + 1
@@ -258,9 +241,6 @@ function App() {
                 <div className="login-actions">
                   <button type="submit" className="submit-button login-button">
                     Start your one shot
-                  </button>
-                  <button type="button" className="reset-button" onClick={resetProgress}>
-                    Reset local progress
                   </button>
                 </div>
               </form>
