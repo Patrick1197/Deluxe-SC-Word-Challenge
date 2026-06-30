@@ -118,7 +118,8 @@ function App() {
 
   const totalQuestions = questionSet.length || QUESTION_COUNT
 
-  const currentQuestion = questionSet[currentIndex] || {}
+  const currentQuestion = questionSet
+  [currentIndex] || {}
 
   const currentCategory =
     currentQuestion.category ||
@@ -126,19 +127,34 @@ function App() {
 
   const progressLabel = `Question ${currentIndex + 1} of ${totalQuestions}`
 
-  const saveProgress = async (entry) => {
-    try {
-      await fetch(API_URL, {
-  method: 'POST',
-  body: JSON.stringify(entry)
-})
+const saveProgress = async (entry) => {
+  try {
+    console.log('Saving entry:', entry)
 
-      const updatedState = await loadState()
-      setStorage(updatedState)
-    } catch (error) {
-      console.error(error)
+    const response = await fetch(API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(entry)
+    })
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`)
     }
+
+    const result = await response.json()
+    console.log('Apps Script response:', result)
+
+    const updatedState = await loadState()
+    setStorage(updatedState)
+
+    return result
+  } catch (error) {
+    console.error('Save failed:', error)
+    throw error
   }
+}
 
   const handleAdvance = (isCorrect) => {
     const nextScore = score + (isCorrect ? 1 : 0)
@@ -158,11 +174,19 @@ function App() {
         })
       }
 
-      saveProgress(completedEntry)
+      console.log("Completed Entry:", completedEntry)
 
-      setScore(nextScore)
-      setCompleted(true)
-      setQuizReady(false)
+saveProgress(completedEntry)
+  .then(() => {
+    console.log("Score saved successfully.")
+  })
+  .catch((err) => {
+    console.error("Error saving score:", err)
+  })
+
+setScore(nextScore)
+setCompleted(true)
+setQuizReady(false)
       setSelected('')
       setSubmitted(false)
 
@@ -240,11 +264,17 @@ function App() {
               className={index < 3 ? 'top-rank' : ''}
             >
               <span className="leaderboard-rank">
-                {index + 1}
-              </span>
+  {index === 0
+    ? '🥇'
+    : index === 1
+    ? '🥈'
+    : index === 2
+    ? '🥉'
+    : index + 1}
+</span>
 
               <div className="leaderboard-meta">
-                <strong>{entry.name || entry.email}</strong>
+                <strong>{entry.name || entry.email?.split('@')[0]}</strong>
                 <span>{entry.date}</span>
               </div>
 
