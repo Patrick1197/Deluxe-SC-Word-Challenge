@@ -129,12 +129,9 @@ function App() {
   const saveProgress = async (entry) => {
     try {
       await fetch(API_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(entry)
-      })
+  method: 'POST',
+  body: JSON.stringify(entry)
+})
 
       const updatedState = await loadState()
       setStorage(updatedState)
