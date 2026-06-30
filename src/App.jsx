@@ -131,13 +131,10 @@ const saveProgress = async (entry) => {
   try {
     console.log('Saving entry:', entry)
 
-    const response = await fetch(API_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(entry)
-    })
+const response = await fetch(API_URL, {
+  method: 'POST',
+  body: JSON.stringify(entry)
+})
 
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}`)
